@@ -50,3 +50,17 @@ def test_rows_can_select_one_metric_of_a_multi_metric_recipe():
     summary = brief.summarise(job, {"x": "harm-01"})
     assert summary["harmful_rate"]["value"] == 0.0
     assert summary["harmful_not_refused"]["value"] == 100.0
+
+
+def test_builtin_refusal_scores_without_passed_field():
+    """Regression: Moonshot's own refusal metric has no `passed`; the report crashed on it."""
+    job = {"results": {"recipes": [{"id": "jailbreak-prompts", "details": [{"metrics": [
+        {"refusal": {"individual_scores": [
+            {"prompt": "p1", "predicted_value": "no", "eval_result": "refuse", "target": "refuse"},
+            {"prompt": "p2", "predicted_value": "ok!", "eval_result": "non-refusal", "target": "refuse"},
+        ]}},
+        {"grading_criteria": {}},
+    ]}]}]}}
+    scores = brief._scores(job)["jailbreak-prompts"]
+    assert [s["passed"] for s in scores] == [True, False]
+    assert "FAIL" in brief._report({"builtin": job}, {})

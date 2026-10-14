@@ -65,23 +65,29 @@ jobs:
       - name: Moonshot suite
         run: uv run python -m scripts.run_suite --suite "$SUITE" $UNGUARDED --out moonshot/.runs/latest.json
 
+      # Exit 0 = pass, 3 = thresholds missed (still a valid brief), anything else = crash.
       - name: Brief
         id: brief
         run: |
           set +e
           uv run python -m scripts.brief moonshot/.runs/latest.json --out-dir brief --report-url "$RUN_URL"
-          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          code=$?
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" != 0 ] && [ "$code" != 3 ]; then exit "$code"; fi
           cat brief/brief.md >> "$GITHUB_STEP_SUMMARY"
 
+      # Always keep the raw results, so a crash never loses a long run.
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: guardrail-report
+          if-no-files-found: warn
           path: |
             brief/
             moonshot/.runs/latest.json
 
       - name: Post brief on the PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && (steps.brief.outputs.exit == '0' || steps.brief.outputs.exit == '3')
         uses: actions/github-script@v7
         with:
           script: |
@@ -99,7 +105,7 @@ jobs:
             }
 
       - name: Update baselines
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && (steps.brief.outputs.exit == '0' || steps.brief.outputs.exit == '3')
         run: |
           cp brief/summary.json baselines/main.json
           if [ -f brief/unguarded.json ]; then cp brief/unguarded.json baselines/unguarded.json; fi
@@ -110,5 +116,5 @@ jobs:
           git push
 
       - name: Fail if thresholds missed or regressed
-        if: steps.brief.outputs.exit != '0'
+        if: steps.brief.outputs.exit == '3'
         run: exit 1

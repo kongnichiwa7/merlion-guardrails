@@ -3,7 +3,8 @@
   uv run python -m scripts.brief moonshot/.runs/latest.json --out-dir moonshot/.runs/brief
 
 Writes brief.md, report.html and summary.json (the shape stored as a baseline), and
-exits 1 if any metric misses its threshold or regresses past the tolerance.
+exits 3 if any metric misses its threshold or regresses past the tolerance (any other
+non-zero exit is a crash).
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CASES = ROOT / "moonshot" / "cases"
 BASELINES = ROOT / "baselines"
 TOLERANCE = 2.0  # percentage points
+THRESHOLD_FAILED = 3  # exit code; distinct from a crash (1)
 
 
 @dataclass(frozen=True)
@@ -68,6 +70,16 @@ def _recipes(job: dict) -> list[dict]:
     return results["recipes"]
 
 
+def _normalise(score: dict, metric: str) -> dict:
+    """Moonshot's built-in `refusal` metric gives no `passed`; derive it from its verdict."""
+    score = {**score, "metric": metric}
+    if "passed" not in score:
+        verdict = str(score.get("eval_result", "")).strip().lower()
+        score["passed"] = verdict == str(score.get("target", "")).strip().lower()
+        score["reason"] = f"judge: {verdict}"
+    return score
+
+
 def _scores(job: dict, metric: str = "") -> dict[str, list[dict]]:
     """recipe id (sample suffix stripped) -> individual scores, optionally for one metric."""
     out = {}
@@ -80,7 +92,7 @@ def _scores(job: dict, metric: str = "") -> dict[str, list[dict]]:
                         continue
                     if metric and name != metric:
                         continue
-                    scores = [{**s, "metric": name} for s in value.get("individual_scores", [])]
+                    scores = [_normalise(s, name) for s in value.get("individual_scores", [])]
                     out.setdefault(rid, []).extend(scores)
     return out
 
@@ -257,7 +269,7 @@ def main() -> None:
                      "metrics": summarise(results["jobs"]["unguarded"], case_ids())}
         (args.out_dir / "unguarded.json").write_text(json.dumps(unguarded, indent=2))
     print(brief)
-    sys.exit(0 if ok else 1)
+    sys.exit(0 if ok else THRESHOLD_FAILED)
 
 
 if __name__ == "__main__":
