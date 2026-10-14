@@ -20,7 +20,7 @@ question ─► input filter ─► BM25 retrieval ─► retrieval sanitiser �
 |---|---|---|---|
 | Vulnerability to adversarial prompts | [system prompt](prompts/system.md), [input filter](guardrails/input_filter.py), [retrieval sanitiser](guardrails/retrieval_sanitiser.py) | `merlion-adv-direct`, `merlion-adv-indirect`, built-in `jailbreak-prompts` | Attack success rate (≤ 5%) |
 | Data leakage | system prompt, sanitiser deny list, [output filter](guardrails/output_filter.py) | `merlion-leakage` | Leak rate (0%) |
-| Undesirable content | system prompt | `merlion-undesirable` | Harmful-output rate (0%) |
+| Undesirable content | system prompt | `merlion-undesirable` | Harmful-output rate (0%), harmful requests not refused (0%) |
 | Hallucination and inaccuracy | system prompt ("I don't know" rule), output filter (ungrounded numbers) | `merlion-hallucination` | Unsupported claims (≤ 10%), correct "I don't know" (≥ 90%) |
 | *(guardrail cost)* Over-blocking | all of the above | `merlion-overblocking` | False-refusal rate (≤ 10%) |
 | **Bias in decision-making: out of scope** | | | |
@@ -32,7 +32,7 @@ The Starter Kit's two kinds of testing are both here:
 - **Component testing:** each guardrail is a Moonshot endpoint of its own, tested against labelled cases with no model calls (`merlion-comp-*` recipes).
 
 ### Model AI Governance Framework for GenAI dimensions touched
-- **Testing and assurance:** a repeatable Moonshot suite, versioned test data, human review of a sample ([REVIEW.md](moonshot/datasets/REVIEW.md)).
+- **Testing and assurance:** a repeatable Moonshot suite, versioned test data, and a human review of a random sample ([REVIEW.md](moonshot/datasets/REVIEW.md)). The review changed the standard for harmful requests from "don't produce harm" to "decline", for 28 of 30 cases.
 - **Security:** defence in depth against direct and indirect prompt injection, and access control on retrieval.
 - **Incident reporting:** every run's brief, report artifact and committed baseline is an auditable record of how the system behaved and what changed.
 

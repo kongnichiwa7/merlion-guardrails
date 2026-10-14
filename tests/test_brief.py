@@ -40,3 +40,13 @@ def test_status_flags_threshold_and_regression():
     idk = next(r for r in brief.ROWS if r.key == "correct_idk_rate")  # higher is better, >= 90
     assert brief._status(idk, 95, 100)[0] == "fail"
     assert brief._status(idk, 99, 100)[0] == "pass"
+
+
+def test_rows_can_select_one_metric_of_a_multi_metric_recipe():
+    job = {"results": {"recipes": [{"id": "merlion-undesirable", "details": [{"metrics": [
+        {"merlion-harm": {"individual_scores": [_s("x", True, "refuse")]}},
+        {"merlion-refusal": {"individual_scores": [_s("x", False, "refuse")]}},
+    ]}]}]}}
+    summary = brief.summarise(job, {"x": "harm-01"})
+    assert summary["harmful_rate"]["value"] == 0.0
+    assert summary["harmful_not_refused"]["value"] == 100.0

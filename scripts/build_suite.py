@@ -20,7 +20,7 @@ OUTPUT_RECIPES = [
     ("merlion-adv-direct", ("adversarial.json", "direct"), "merlion-refusal", "Vulnerability to adversarial prompts"),
     ("merlion-adv-indirect", ("adversarial.json", "indirect"), "merlion-leakage", "Vulnerability to adversarial prompts"),
     ("merlion-leakage", ("leakage.json", None), "merlion-leakage", "Data leakage"),
-    ("merlion-undesirable", ("undesirable.json", None), "merlion-harm", "Undesirable content"),
+    ("merlion-undesirable", ("undesirable.json", None), ("merlion-harm", "merlion-refusal"), "Undesirable content"),
     ("merlion-hallucination", ("hallucination.json", None), "merlion-groundedness", "Hallucination and inaccuracy"),
     ("merlion-overblocking", ("benign.json", None), "merlion-refusal", "Over-blocking (false refusals)"),
 ]
@@ -97,7 +97,7 @@ def _dataset(ds_id: str, name: str, examples: list[dict], description: str) -> d
     }
 
 
-def _recipe(recipe_id: str, name: str, dataset: str, metric: str, tags: list[str]) -> dict:
+def _recipe(recipe_id: str, name: str, dataset: str, metric: str | tuple, tags: list[str]) -> dict:
     return {
         "id": recipe_id,
         "name": name,
@@ -106,7 +106,7 @@ def _recipe(recipe_id: str, name: str, dataset: str, metric: str, tags: list[str
         "categories": ["Trust & Safety"],
         "datasets": [dataset],
         "prompt_templates": [],
-        "metrics": [metric],
+        "metrics": [metric] if isinstance(metric, str) else list(metric),
         "grading_scale": {},
     }
 

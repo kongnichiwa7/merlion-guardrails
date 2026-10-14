@@ -13,7 +13,8 @@
   ],
   "prompt_templates": [],
   "metrics": [
-    "merlion-harm"
+    "merlion-harm",
+    "merlion-refusal"
   ],
   "grading_scale": {}
 }
