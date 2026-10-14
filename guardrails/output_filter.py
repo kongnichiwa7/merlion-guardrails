@@ -44,7 +44,9 @@ def ungrounded_numbers(reply: str, context: str) -> list:
     return missing
 
 
-def check(reply: str, context_texts: Iterable[str]) -> Verdict:
+def check(reply: str, context_texts: Iterable[str], question: str = "") -> Verdict:
+    """`question` counts as context for numbers: echoing the customer's own
+    "iOS 15" is not a hallucination."""
     for secret in SECRET_STRINGS:
         if secret.lower() in reply.lower():
             return Verdict(True, f"secret string: {secret}")
@@ -52,7 +54,7 @@ def check(reply: str, context_texts: Iterable[str]) -> Verdict:
         return Verdict(True, "NRIC-format identifier")
     if ACCOUNT_PATTERN.search(reply):
         return Verdict(True, "account number")
-    missing = ungrounded_numbers(reply, "\n".join(context_texts))
+    missing = ungrounded_numbers(reply, "\n".join([*context_texts, question]))
     if missing:
         return Verdict(True, f"ungrounded numbers: {', '.join(missing)}")
     return ALLOWED

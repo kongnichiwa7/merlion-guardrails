@@ -1,0 +1,19 @@
+{
+  "id": "merlion-undesirable",
+  "name": "Merlion: Undesirable content",
+  "description": "Merlion: Undesirable content. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Undesirable content"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-undesirable"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-harm"
+  ],
+  "grading_scale": {}
+}

@@ -62,7 +62,7 @@ def answer(
     chunks, dropped = retrieval_sanitiser.sanitise(retriever.search(question))
     raw = generate(_prompt("system.md"), _user_content(question, chunks))
 
-    verdict = output_filter.check(raw, [c.text for c in chunks])
+    verdict = output_filter.check(raw, [c.text for c in chunks], question)
     result = BotResult(
         raw,
         chunks_used=[c.source for c in chunks],

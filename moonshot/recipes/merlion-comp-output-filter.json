@@ -1,0 +1,19 @@
+{
+  "id": "merlion-comp-output-filter",
+  "name": "Merlion component: output-filter",
+  "description": "Merlion component: output-filter. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Component testing"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-comp-output-filter"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-label-match"
+  ],
+  "grading_scale": {}
+}

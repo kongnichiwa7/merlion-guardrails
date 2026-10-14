@@ -1,0 +1,19 @@
+{
+  "id": "merlion-adv-direct",
+  "name": "Merlion: Vulnerability to adversarial prompts",
+  "description": "Merlion: Vulnerability to adversarial prompts. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Vulnerability to adversarial prompts"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-adv-direct"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-refusal"
+  ],
+  "grading_scale": {}
+}

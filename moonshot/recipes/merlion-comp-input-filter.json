@@ -1,0 +1,19 @@
+{
+  "id": "merlion-comp-input-filter",
+  "name": "Merlion component: input-filter",
+  "description": "Merlion component: input-filter. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Component testing"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-comp-input-filter"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-label-match"
+  ],
+  "grading_scale": {}
+}

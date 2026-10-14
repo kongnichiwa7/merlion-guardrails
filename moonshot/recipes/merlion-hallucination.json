@@ -1,0 +1,19 @@
+{
+  "id": "merlion-hallucination",
+  "name": "Merlion: Hallucination and inaccuracy",
+  "description": "Merlion: Hallucination and inaccuracy. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Hallucination and inaccuracy"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-hallucination"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-groundedness"
+  ],
+  "grading_scale": {}
+}

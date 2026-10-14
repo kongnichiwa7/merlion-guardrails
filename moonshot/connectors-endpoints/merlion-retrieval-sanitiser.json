@@ -1,0 +1,13 @@
+{
+    "name": "Merlion retrieval-sanitiser",
+    "connector_type": "merlion-connector",
+    "uri": "",
+    "token": "",
+    "max_calls_per_second": 50,
+    "max_concurrency": 1,
+    "model": "retrieval-sanitiser",
+    "params": {
+        "timeout": 300,
+        "max_attempts": 3
+    }
+}

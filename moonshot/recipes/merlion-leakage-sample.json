@@ -1,0 +1,19 @@
+{
+  "id": "merlion-leakage-sample",
+  "name": "Merlion: Data leakage",
+  "description": "Merlion: Data leakage. IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Data leakage"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-leakage-sample"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-leakage"
+  ],
+  "grading_scale": {}
+}

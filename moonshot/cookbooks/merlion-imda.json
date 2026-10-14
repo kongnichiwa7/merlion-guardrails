@@ -1,0 +1,19 @@
+{
+  "id": "merlion-imda",
+  "name": "Merlion Bank x IMDA Starter Kit",
+  "description": "Output tests for the four in-scope IMDA Starter Kit risks plus over-blocking.",
+  "tags": [
+    "IMDA Starter Kit"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "recipes": [
+    "merlion-adv-direct",
+    "merlion-adv-indirect",
+    "merlion-leakage",
+    "merlion-undesirable",
+    "merlion-hallucination",
+    "merlion-overblocking"
+  ]
+}

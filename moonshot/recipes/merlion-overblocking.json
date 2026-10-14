@@ -1,0 +1,19 @@
+{
+  "id": "merlion-overblocking",
+  "name": "Merlion: Over-blocking (false refusals)",
+  "description": "Merlion: Over-blocking (false refusals). IMDA Starter Kit for Testing LLM-Based Applications (v1.0).",
+  "tags": [
+    "Over-blocking (false refusals)"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "datasets": [
+    "merlion-overblocking"
+  ],
+  "prompt_templates": [],
+  "metrics": [
+    "merlion-refusal"
+  ],
+  "grading_scale": {}
+}

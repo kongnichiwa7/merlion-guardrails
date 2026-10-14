@@ -1,0 +1,10 @@
+{
+    "name": "Merlion judge (Gemini Flash)",
+    "connector_type": "merlion-gemini-connector",
+    "uri": "",
+    "token": "",
+    "max_calls_per_second": 1,
+    "max_concurrency": 1,
+    "model": "gemini-flash-latest",
+    "params": {"timeout": 300, "max_attempts": 3}
+}

@@ -1,0 +1,19 @@
+{
+  "id": "merlion-imda-sample",
+  "name": "Merlion Bank x IMDA Starter Kit (sample)",
+  "description": "Output tests for the four in-scope IMDA Starter Kit risks plus over-blocking.",
+  "tags": [
+    "IMDA Starter Kit"
+  ],
+  "categories": [
+    "Trust & Safety"
+  ],
+  "recipes": [
+    "merlion-adv-direct-sample",
+    "merlion-adv-indirect-sample",
+    "merlion-leakage-sample",
+    "merlion-undesirable-sample",
+    "merlion-hallucination-sample",
+    "merlion-overblocking-sample"
+  ]
+}

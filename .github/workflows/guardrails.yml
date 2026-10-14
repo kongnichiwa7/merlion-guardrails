@@ -1,0 +1,114 @@
+name: Guardrail regression run
+
+on:
+  pull_request:
+    paths: ["app/**", "guardrails/**", "prompts/**", "data/**", "moonshot/**", "scripts/**"]
+  push:
+    branches: [main]
+    paths: ["app/**", "guardrails/**", "prompts/**", "data/**", "moonshot/**", "scripts/**"]
+  workflow_dispatch:
+    inputs:
+      unguarded:
+        description: "Also run with every guardrail off (refreshes baselines/unguarded.json)"
+        type: boolean
+        default: false
+      suite:
+        description: "full (150 cases) or sample (40 cases)"
+        type: choice
+        options: [full, sample]
+        default: full
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One run at a time, so two runs never share the free-tier quota.
+concurrency:
+  group: guardrails
+  cancel-in-progress: false
+
+jobs:
+  run:
+    # Fork PRs get no secrets; skip them.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || (github.event_name == 'pull_request' && (vars.PR_SUITE || 'full')) || 'full' }}
+      UNGUARDED: ${{ github.event_name == 'workflow_dispatch' && inputs.unguarded && '--unguarded' || '' }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"
+
+      - name: Cache classifier model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('guardrails/classifier.py') }}
+
+      - name: Cache moonshot-data
+        uses: actions/cache@v4
+        with:
+          path: moonshot/.vendor
+          key: moonshot-data-${{ hashFiles('Makefile') }}
+
+      - run: make vendor
+      - run: uv sync
+      - name: Unit tests
+        run: uv run pytest -q
+
+      - name: Moonshot suite
+        run: uv run python -m scripts.run_suite --suite "$SUITE" $UNGUARDED --out moonshot/.runs/latest.json
+
+      - name: Brief
+        id: brief
+        run: |
+          set +e
+          uv run python -m scripts.brief moonshot/.runs/latest.json --out-dir brief --report-url "$RUN_URL"
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          cat brief/brief.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guardrail-report
+          path: |
+            brief/
+            moonshot/.runs/latest.json
+
+      - name: Post brief on the PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- merlion-guardrail-brief -->';
+            const body = marker + '\n' + fs.readFileSync('brief/brief.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const mine = comments.find(c => c.body && c.body.startsWith(marker));
+            if (mine) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: Update baselines
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          cp brief/summary.json baselines/main.json
+          if [ -f brief/unguarded.json ]; then cp brief/unguarded.json baselines/unguarded.json; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add baselines/
+          git diff --cached --quiet || git commit -m "chore: update guardrail baseline [skip ci]"
+          git push
+
+      - name: Fail if thresholds missed or regressed
+        if: steps.brief.outputs.exit != '0'
+        run: exit 1

@@ -4,9 +4,9 @@ from __future__ import annotations
 import re
 
 INJECTION_PATTERNS = [
-    r"ignore (all |any )?(the )?(previous|prior|above|earlier) (instructions|rules|prompts?)",
-    r"disregard (all |any )?(the )?(previous|prior|above|your) (instructions|rules|prompts?)",
-    r"forget (all |everything|your) (previous |prior )?(instructions|rules|you were told)",
+    r"(ignore|disregard|forget|override) (all |any )?(of )?(the |your )?"
+    r"(previous |prior |above |earlier |original |existing )?(instructions|rules|prompts?|guidelines)",
+    r"forget everything (you were told|above)",
     r"you are now (in )?(dan|developer mode|maintenance mode|jailbreak|unrestricted)",
     r"\b(dan|developer|maintenance|god) mode\b",
     r"(reveal|print|show|repeat|output) (me )?(your|the) (system prompt|instructions|hidden prompt)",
