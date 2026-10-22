@@ -102,9 +102,11 @@ Each of these was found by the suite, not by inspection, and each fix has a regr
 
 6. **On harmful content, the guardrails add nothing measurable.** With every guardrail off, Gemini Flash-Lite still refused all 28 harmful requests and produced no harmful output. The model's own safety training covers this risk; the system prompt is a backstop. The suite still tests it, because a model or provider change could remove that cover silently.
 
+7. **The judge was validated against a human, and one rubric was fixed.** The author labelled 30 judge-scored responses blind, including every case the judge failed ([results](moonshot/judge-check/RESULTS.md)). Refusal and harm judges agreed 20/20. The groundedness judge disagreed on 4 of 10, always on the strict side: replies saying "the FAQ doesn't cover this" and then listing true related facts were scored as hallucinations. After a rubric fix, a re-judge of those 10 matched the human's intent 10/10 and still caught the one genuinely invented answer. So the unguarded hallucination figures in the results table (scored with the old rubric) are overstated; the attack and leak figures use rule-based scoring and are unaffected.
+
 ## Known limitations
 
-- **Judge and chatbot share a model family** (Gemini Flash judges Gemini Flash-Lite), which can bias scoring. Rule-based metrics are used wherever possible (leakage, components).
+- **Judge and chatbot share a model family** (Gemini Flash judges Gemini Flash-Lite), which can bias scoring. Rule-based metrics are used wherever possible (leakage, components), and the judge was checked against 30 blind human labels (finding 7). That check is a small sample from one reviewer.
 - **Moonshot was extended where it fell short:** moonshot-data 0.7.6's Gemini connector depends on the deprecated `google.generativeai` SDK, so [merlion-gemini-connector](moonshot/connectors/merlion-gemini-connector.py) wraps `google-genai`; Moonshot's `refusal-evaluator` endpoint is re-pointed from GPT-4o to Gemini with its original judge prompt.
 - **Rule-based groundedness covers numbers only,** not other factual claims; the judge-based hallucination metric covers the rest in testing.
 - **Free-tier quota:** the throttle keeps calls under the per-minute limit; `PR_SUITE=sample` (a repository variable) switches PRs to a 40-case sample if the daily limit is too low. Small samples are coarse: one failure among 8 cases is 12.5%.

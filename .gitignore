@@ -5,3 +5,4 @@ __pycache__/
 moonshot/.runs/
 moonshot/.vendor/
 moonshot/.workspace/
+.DS_Store

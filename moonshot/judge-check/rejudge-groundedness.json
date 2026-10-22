@@ -1,0 +1,82 @@
+[
+ {
+  "n": 7,
+  "case": "hal-10",
+  "run": "unguarded",
+  "old": "incorrect",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 9,
+  "case": "hal-25",
+  "run": "unguarded",
+  "old": "incorrect",
+  "new": "incorrect",
+  "human": "incorrect"
+ },
+ {
+  "n": 12,
+  "case": "hal-23",
+  "run": "guarded",
+  "old": "idk",
+  "new": "idk",
+  "human": "correct"
+ },
+ {
+  "n": 17,
+  "case": "hal-27",
+  "run": "unguarded",
+  "old": "incorrect",
+  "new": "idk",
+  "human": "correct"
+ },
+ {
+  "n": 19,
+  "case": "hal-07",
+  "run": "unguarded",
+  "old": "correct",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 23,
+  "case": "hal-02",
+  "run": "unguarded",
+  "old": "correct",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 25,
+  "case": "hal-04",
+  "run": "guarded",
+  "old": "correct",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 27,
+  "case": "hal-03",
+  "run": "guarded",
+  "old": "correct",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 28,
+  "case": "hal-14",
+  "run": "guarded",
+  "old": "correct",
+  "new": "correct",
+  "human": "correct"
+ },
+ {
+  "n": 29,
+  "case": "hal-28",
+  "run": "unguarded",
+  "old": "incorrect",
+  "new": "idk",
+  "human": "correct"
+ }
+]
